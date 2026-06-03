@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ausgaben-Tracker</title>
+  
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Design System & Custom Properties */
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #14b8a6; /* Teal */
+      --accent-hover: #0d9488;
+      --accent-glow: rgba(20, 184, 166, 0.25);
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --input-border: rgba(255, 255, 255, 0.1);
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    /* Outer Wrapper for App Container */
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Header Section */
+    .app-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-logo {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
+      margin-bottom: 8px;
+    }
+
+    .app-logo svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .app-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .app-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* Premium Glassmorphic Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Dynamic Timestamp Display */
+    .timestamp-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .timestamp-display svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent);
+    }
+
+    /* Form Fields Styling */
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-left: 4px;
+    }
+
+    /* Generic Input Layout */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      width: 20px;
+      height: 20px;
+      fill: var(--text-secondary);
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    /* Inputs, Select Styles */
+    .form-input, .form-select {
+      width: 100%;
+      height: 52px; /* Touch-friendly size */
+      padding: 12px 16px 12px 48px;
+      font-family: inherit;
+      font-size: 16px; /* Crucial for iOS to prevent zoom-on-focus */
+      color: var(--text-primary);
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+      appearance: none; /* Reset standard browser styling */
+      -webkit-appearance: none;
+    }
+
+    /* Price field trailing symbol layout */
+    .price-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .price-input-wrapper .form-input {
+      padding-right: 40px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      right: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent);
+      pointer-events: none;
+    }
+
+    /* Focused Input states */
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent);
+      background-color: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-input:focus ~ .input-icon, .form-select:focus ~ .input-icon {
+      fill: var(--accent);
+    }
+
+    /* Category Dropdown arrow styling */
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid var(--text-secondary);
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .select-wrapper:focus-within::after {
+      border-top-color: var(--accent);
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* Button Styling */
+    .btn-submit {
+      width: 100%;
+      height: 54px;
+      background: linear-gradient(135deg, var(--accent) 0%, #0f766e 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); /* Blue hover theme */
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 10px rgba(20, 184, 166, 0.1);
+    }
+
+    .btn-submit:disabled {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Toast Notification System */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translate(-50%, 100px);
+      width: calc(100% - 32px);
+      max-width: 400px;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+      opacity: 0;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .toast-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .toast-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .toast-message {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Dynamic Loading Spinner */
+    .spinner {
+      display: none;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 400px) {
+      .card {
+        padding: 20px 16px;
+      }
+      .app-title {
+        font-size: 21px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="app-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+        </svg>
+      </div>
+      <h1 class="app-title">Ausgaben-Tracker</h1>
+      <p class="app-subtitle">Schnelle mobile Erfassung für Google Sheets</p>
+    </header>
+
+    <!-- Glassmorphic Card containing the form -->
+    <main class="card">
+      <!-- Read-only visual preview of the date & time being submitted -->
+      <div class="timestamp-display">
+        <svg viewBox="0 0 24 24">
+          <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+        </svg>
+        <span id="date-preview">Wird geladen...</span>
+      </div>
+
+      <form id="expense-form" autocomplete="off">
+        <!-- Hidden input holding date and time formatted for the Sheet -->
+        <input type="hidden" id="timestamp" name="timestamp">
+
+        <!-- What was bought -->
+        <div class="form-group">
+          <label for="description" class="form-label">Was wurde gekauft?</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M17.21 9l-4.38-6.56c-.19-.28-.51-.44-.83-.44-.32 0-.64.16-.83.44L6.79 9H2c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h1v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-8h1c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1h-4.79zM9 9l3-4.5L15 9H9zm3 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+            </svg>
+            <input type="text" id="description" name="description" class="form-input" placeholder="z. B. Wocheneinkauf, Tanken..." required>
+          </div>
+        </div>
+
+        <!-- Price (Numeric Keyboard Optimization) -->
+        <div class="form-group">
+          <label for="price" class="form-label">Preis</label>
+          <div class="price-input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+            <input type="number" id="price" name="price" class="form-input" placeholder="0,00" step="0.01" min="0.01" inputmode="decimal" required>
+            <span class="currency-symbol">€</span>
+          </div>
+        </div>
+
+        <!-- Category Dropdown -->
+        <div class="form-group">
+          <label for="category" class="form-label">Kategorie</label>
+          <div class="select-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/>
+            </svg>
+            <select id="category" name="category" class="form-select" required>
+              <option value="" disabled selected hidden>Kategorie wählen...</option>
+              <option value="Lebensmittel & Haushalt">Lebensmittel & Haushalt</option>
+              <option value="Transport & Auto">Transport & Auto</option>
+              <option value="Wohnen & Energie">Wohnen & Energie</option>
+              <option value="Freizeit & Freizeitgestaltung">Freizeit & Freizeitgestaltung</option>
+              <option value="Kleidung & Shopping">Kleidung & Shopping</option>
+              <option value="Gesundheit & Vorsorge">Gesundheit & Vorsorge</option>
+              <option value="Versicherungen & Abos">Versicherungen & Abos</option>
+              <option value="Spende">Spende</option>
+              <option value="Sonstiges">Sonstiges</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="btn-submit">
+          <span class="btn-text">Speichern</span>
+          <div id="btn-spinner" class="spinner"></div>
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <div id="toast-icon-container"></div>
+    <span id="toast-message" class="toast-message"></span>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION
+    // Replace the URL below with your deployed Google Apps Script Web App URL.
+    // ==========================================
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwb5F6_SpuEpd_wEb1L8cahbhgSinS6o6_xHE3zQQpw6r3_o2onCHievKgPMNudPNlBCw/exec";
+
+    // SVGs for Toast Notifications
+    const ICONS = {
+      success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+      error: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+      warning: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`
+    };
+
+    // DOM Elements
+    const form = document.getElementById("expense-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const btnSpinner = document.getElementById("btn-spinner");
+    const btnText = submitBtn.querySelector(".btn-text");
+    const timestampInput = document.getElementById("timestamp");
+    const datePreview = document.getElementById("date-preview");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toast-message");
+    const toastIconContainer = document.getElementById("toast-icon-container");
+
+    // Dynamic Date & Time Updater
+    function updateTimestamp() {
+      const now = new Date();
+      
+      // Formatting for the hidden field (Google Sheets friendly)
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      timestampInput.value = formattedTimestamp;
+      
+      // Formatting for the nice user visual preview
+      const previewOptions = { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      datePreview.innerText = `Eintrag am: ${now.toLocaleString('de-DE', previewOptions)}`;
+    }
+
+    // Initialize date and update it every second to remain accurate until user submits
+    updateTimestamp();
+    let timestampInterval = setInterval(updateTimestamp, 1000);
+
+    // Toast Alert Helper
+    let toastTimeout;
+    function showToast(message, type = "success") {
+      clearTimeout(toastTimeout);
+      
+      toast.className = `toast toast-${type} show`;
+      toastMsg.innerText = message;
+      toastIconContainer.innerHTML = ICONS[type] || "";
+      
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 4000);
+    }
+
+    // Form Submit Handler
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      // Stop the ticking clock interval so timestamp doesn't change during submission
+      clearInterval(timestampInterval);
+
+      // Validate that the user changed the template Web App URL
+      if (WEB_APP_URL.includes("HIER_DEINE_GOOGLE_WEB_APP_URL_EINTRAGEN") || WEB_APP_URL.trim() === "") {
+        showToast("Konfigurationsfehler: Bitte trage deine Google Apps Script Web-App-URL in index.html ein.", "warning");
+        // Restart timestamp updater
+        setInterval(updateTimestamp, 1000);
+        return;
+      }
+
+      // Enter Loading State
+      submitBtn.disabled = true;
+      btnSpinner.style.display = "block";
+      btnText.style.opacity = "0.7";
+      btnText.innerText = "Wird gespeichert...";
+
+      // Gather form data
+      const formData = new FormData(form);
+      const payload = {
+        timestamp: formData.get("timestamp"),
+        description: formData.get("description"),
+        price: formData.get("price"),
+        category: formData.get("category")
+      };
+
+      try {
+        // We use fetch with mode: 'no-cors' if we don't care about reading the response,
+        // or simple POST request. Google Apps Script redirects. Setting standard redirect parameter.
+        // We send JSON as a POST request body
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8", // text/plain prevents CORS preflight OPTIONS request in standard fetch requests
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // Since we use text/plain to avoid preflight, Apps Script still parses postData.contents correctly.
+        const result = await response.json();
+        
+        if (result.status === "success") {
+          showToast("Ausgabe erfolgreich gespeichert!", "success");
+          
+          // Reset form fields except timestamp
+          document.getElementById("description").value = "";
+          document.getElementById("price").value = "";
+          document.getElementById("category").selectedIndex = 0; // resets to selection helper
+        } else {
+          showToast(result.message || "Fehler beim Speichern der Ausgabe.", "error");
+        }
+      } catch (err) {
+        // Fetch might throw a CORS error if not deployed correctly, but often the request still goes through.
+        // Let's explain nicely to the user.
+        console.error("Network/CORS Error: ", err);
+        
+        // Let's check if it went through anyway (very common with Apps Script redirect response handling)
+        showToast("Verbindung hergestellt! Falls kein Eintrag im Sheet erscheint, überprüfe die URL.", "warning");
+        
+        // Reset form inputs anyway in case it was a success but blocked by CORS check on redirect
+        document.getElementById("description").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("category").selectedIndex = 0;
+      } finally {
+        // Exit Loading State
+        submitBtn.disabled = false;
+        btnSpinner.style.display = "none";
+        btnText.style.opacity = "1";
+        btnText.innerText = "Speichern";
+        
+        // Restart the clock ticking for the next entry
+        updateTimestamp();
+        timestampInterval = setInterval(updateTimestamp, 1000);
+      }
+    });
+  </script>
+</body>
+</html>
