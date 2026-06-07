@@ -3,36 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Ausgaben-Tracker - Ein moderner, minimalistischer Finanz-Tracker mit edlem Neon-Glow für Google Sheets.">
   <title>Ausgaben-Tracker</title>
+  
   <link rel="apple-touch-icon" href="Ausgaben.jpeg">
-  
-  <!-- Google Fonts for premium typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link rel="icon" type="image/jpeg" href="Ausgaben.jpeg">
+
   <style>
-    /* Design System & Custom Properties */
+    /* SOFT MODERN NEON DESIGN TOKENS */
     :root {
-      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --accent: #14b8a6; /* Teal */
-      --accent-hover: #0d9488;
-      --accent-glow: rgba(20, 184, 166, 0.25);
-      --danger: #ef4444;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --input-bg: rgba(15, 23, 42, 0.6);
-      --input-border: rgba(255, 255, 255, 0.1);
-      --radius-lg: 20px;
-      --radius-md: 12px;
-      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-black: #050505;
+      
+      /* Neon Light Tones */
+      --neon-pink: #ff65a3;
+      --neon-purple: #b666ff;
+      --neon-teal: #14b8a6;
+      --neon-red: #ff6b6b;
+      
+      /* Ambient Glows */
+      --glow-purple: 0 0 15px rgba(182, 102, 255, 0.35), 0 0 35px rgba(182, 102, 255, 0.15);
+      --glow-teal: 0 0 15px rgba(20, 184, 166, 0.35), 0 0 35px rgba(20, 184, 166, 0.15);
+      --glow-red: 0 0 15px rgba(255, 107, 107, 0.35), 0 0 35px rgba(255, 107, 107, 0.15);
+      
+      --glow-text-purple: 0 0 8px rgba(182, 102, 255, 0.5), 0 0 25px rgba(182, 102, 255, 0.2);
+      --glow-text-teal: 0 0 8px rgba(20, 184, 166, 0.5), 0 0 25px rgba(20, 184, 166, 0.2);
+
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --transition-fast: 0.3s ease;
     }
 
-    /* Reset & Base Styles */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -41,104 +40,120 @@
     }
 
     body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg-gradient);
-      color: var(--text-primary);
+      background-color: var(--bg-black);
+      color: #ffffff;
+      font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      padding: 16px;
+      justify-content: flex-start;
+      padding: 20px 10px;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Outer Wrapper for App Container */
+    /* BACKGROUND AMBIENT GLOW */
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(182, 102, 255, 0.08) 0%, rgba(20, 184, 166, 0.03) 50%, rgba(0,0,0,0) 80%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* OUTER APP CONTAINER */
     .app-container {
       width: 100%;
       max-width: 440px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      animation: fadeIn 0.6s ease-out;
     }
 
-    /* Header Section */
+    /* HEADER */
     .app-header {
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .app-logo {
       width: 56px;
       height: 56px;
-      background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
+      background: transparent;
+      border: 1px solid rgba(182, 102, 255, 0.5);
       border-radius: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
+      box-shadow: var(--glow-purple);
       margin-bottom: 8px;
     }
 
     .app-logo svg {
-      width: 28px;
-      height: 28px;
-      fill: white;
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+      filter: drop-shadow(0 0 5px rgba(182, 102, 255, 0.6));
     }
 
     .app-title {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(to right, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 2rem;
+      font-weight: 300;
+      color: #ffffff;
+      text-shadow: var(--glow-text-purple);
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .app-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      font-weight: 400;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
     }
 
-    /* Premium Glassmorphic Card */
+    /* GLASS CONTAINER */
     .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 8, 0.45);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
       padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
     }
 
-    /* Dynamic Timestamp Display */
+    /* TIMESTAMP */
     .timestamp-display {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
       margin-bottom: 24px;
-      text-align: center;
+      letter-spacing: 0.5px;
     }
 
     .timestamp-display svg {
       width: 14px;
       height: 14px;
-      fill: var(--accent);
+      fill: var(--neon-purple);
     }
 
-    /* Form Fields Styling */
+    /* FORM ELEMENTS */
     .form-group {
       margin-bottom: 20px;
       display: flex;
@@ -147,14 +162,15 @@
     }
 
     .form-label {
-      font-size: 14px;
+      font-size: 0.8rem;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.5);
       padding-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    /* Generic Input Layout */
-    .input-wrapper {
+    .input-wrapper, .price-input-wrapper, .select-wrapper {
       position: relative;
       display: flex;
       align-items: center;
@@ -165,33 +181,25 @@
       left: 16px;
       width: 20px;
       height: 20px;
-      fill: var(--text-secondary);
+      fill: rgba(255, 255, 255, 0.3);
       pointer-events: none;
-      transition: var(--transition);
+      transition: var(--transition-fast);
     }
 
-    /* Inputs, Select Styles */
     .form-input, .form-select {
       width: 100%;
-      height: 52px; /* Touch-friendly size */
+      height: 52px;
       padding: 12px 16px 12px 48px;
       font-family: inherit;
-      font-size: 16px; /* Crucial for iOS to prevent zoom-on-focus */
-      color: var(--text-primary);
-      background-color: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: var(--radius-md);
+      font-size: 16px;
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
       outline: none;
-      transition: var(--transition);
-      appearance: none; /* Reset standard browser styling */
+      transition: var(--transition-fast);
+      appearance: none;
       -webkit-appearance: none;
-    }
-
-    /* Price field trailing symbol layout */
-    .price-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
     }
 
     .price-input-wrapper .form-input {
@@ -201,28 +209,25 @@
     .currency-symbol {
       position: absolute;
       right: 18px;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--neon-teal);
+      text-shadow: 0 0 5px rgba(20, 184, 166, 0.3);
       pointer-events: none;
     }
 
-    /* Focused Input states */
+    /* FOCUSED STATES */
     .form-input:focus, .form-select:focus {
-      border-color: var(--accent);
-      background-color: rgba(15, 23, 42, 0.8);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      border-color: rgba(20, 184, 166, 0.6);
+      background-color: rgba(20, 184, 166, 0.02);
+      box-shadow: var(--glow-teal);
     }
 
     .form-input:focus ~ .input-icon, .form-select:focus ~ .input-icon {
-      fill: var(--accent);
+      fill: var(--neon-teal);
     }
 
-    /* Category Dropdown arrow styling */
-    .select-wrapper {
-      position: relative;
-    }
-
+    /* SELECT ARROW */
     .select-wrapper::after {
       content: "";
       position: absolute;
@@ -231,59 +236,60 @@
       transform: translateY(-50%);
       width: 0;
       height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 6px solid var(--text-secondary);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid rgba(255, 255, 255, 0.4);
       pointer-events: none;
-      transition: var(--transition);
+      transition: var(--transition-fast);
     }
 
     .select-wrapper:focus-within::after {
-      border-top-color: var(--accent);
+      border-top-color: var(--neon-teal);
       transform: translateY(-50%) rotate(180deg);
     }
 
-    /* Button Styling */
+    /* BUTTONS */
     .btn-submit {
       width: 100%;
       height: 54px;
-      background: linear-gradient(135deg, var(--accent) 0%, #0f766e 100%);
+      background: transparent;
       color: white;
-      border: none;
-      border-radius: var(--radius-md);
+      border: 1px solid rgba(20, 184, 166, 0.6);
+      border-radius: 14px;
       font-family: inherit;
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
-      transition: var(--transition);
+      box-shadow: var(--glow-teal);
+      text-shadow: 0 0 3px #ffffff;
+      transition: var(--transition-fast);
       margin-top: 10px;
     }
 
-    .btn-submit:hover {
-      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); /* Blue hover theme */
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
-      transform: translateY(-1px);
+    .btn-submit:hover:not(:disabled) {
+      background: rgba(20, 184, 166, 0.1);
+      box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
     }
 
     .btn-submit:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 10px rgba(20, 184, 166, 0.1);
+      transform: scale(0.98);
     }
 
     .btn-submit:disabled {
-      background: rgba(148, 163, 184, 0.2);
-      color: var(--text-secondary);
-      cursor: not-allowed;
+      border-color: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.15);
       box-shadow: none;
-      transform: none;
+      text-shadow: none;
+      cursor: not-allowed;
     }
 
-    /* Toast Notification System */
+    /* TOAST NOTIFICATION */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -292,16 +298,16 @@
       width: calc(100% - 32px);
       max-width: 400px;
       padding: 16px 20px;
-      border-radius: var(--radius-md);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
       opacity: 0;
       z-index: 1000;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .toast.show {
@@ -310,21 +316,24 @@
     }
 
     .toast-success {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.4);
       color: #34d399;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
     }
 
     .toast-error {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.4);
       color: #f87171;
+      box-shadow: var(--glow-red);
     }
 
     .toast-warning {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.05);
+      border: 1px solid rgba(245, 158, 11, 0.4);
       color: #fbbf24;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
     }
 
     .toast-icon {
@@ -337,14 +346,15 @@
       font-size: 14px;
       font-weight: 500;
       line-height: 1.4;
+      letter-spacing: 0.5px;
     }
 
-    /* Dynamic Loading Spinner */
+    /* LOADING SPINNER */
     .spinner {
       display: none;
       width: 22px;
       height: 22px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       border-top-color: white;
       animation: spin 0.8s linear infinite;
@@ -354,45 +364,38 @@
       to { transform: rotate(360deg); }
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* RESPONSIVE BREATHING GLOW FOR SUBMIT BUTTON */
+    @keyframes breathing-teal {
+      0% { box-shadow: 0 0 12px rgba(20, 184, 166, 0.25); border-color: rgba(20, 184, 166, 0.4); }
+      50% { box-shadow: 0 0 22px rgba(20, 184, 166, 0.5); border-color: rgba(20, 184, 166, 0.8); }
+      100% { box-shadow: 0 0 12px rgba(20, 184, 166, 0.25); border-color: rgba(20, 184, 166, 0.4); }
+    }
+    .pulse-btn {
+      animation: breathing-teal 5s infinite ease-in-out;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 400px) {
-      .card {
-        padding: 20px 16px;
-      }
-      .app-title {
-        font-size: 21px;
-      }
+      .card { padding: 20px 16px; }
+      .app-title { font-size: 1.7rem; }
     }
   </style>
 </head>
 <body>
 
+  <div class="ambient-glow"></div>
+
   <div class="app-container">
-    <!-- Header -->
     <header class="app-header">
       <div class="app-logo">
         <svg viewBox="0 0 24 24">
           <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
         </svg>
       </div>
-      <h1 class="app-title">Ausgaben-Tracker</h1>
-      <p class="app-subtitle">Schnelle mobile Erfassung für Google Sheets</p>
+      <h1 class="app-title">Ausgaben</h1>
+      <p class="app-subtitle">Google Sheets Erfassung</p>
     </header>
 
-    <!-- Glassmorphic Card containing the form -->
     <main class="card">
-      <!-- Read-only visual preview of the date & time being submitted -->
       <div class="timestamp-display">
         <svg viewBox="0 0 24 24">
           <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
@@ -401,10 +404,8 @@
       </div>
 
       <form id="expense-form" autocomplete="off">
-        <!-- Hidden input holding date and time formatted for the Sheet -->
         <input type="hidden" id="timestamp" name="timestamp">
 
-        <!-- What was bought -->
         <div class="form-group">
           <label for="description" class="form-label">Was wurde gekauft?</label>
           <div class="input-wrapper">
@@ -415,7 +416,6 @@
           </div>
         </div>
 
-        <!-- Price (Numeric Keyboard Optimization) -->
         <div class="form-group">
           <label for="price" class="form-label">Preis</label>
           <div class="price-input-wrapper">
@@ -427,7 +427,6 @@
           </div>
         </div>
 
-        <!-- Category Dropdown -->
         <div class="form-group">
           <label for="category" class="form-label">Kategorie</label>
           <div class="select-wrapper">
@@ -444,8 +443,7 @@
           </div>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" id="submit-btn" class="btn-submit">
+        <button type="submit" id="submit-btn" class="btn-submit pulse-btn">
           <span class="btn-text">Speichern</span>
           <div id="btn-spinner" class="spinner"></div>
         </button>
@@ -453,27 +451,20 @@
     </main>
   </div>
 
-  <!-- Toast Notification -->
   <div id="toast" class="toast">
     <div id="toast-icon-container"></div>
     <span id="toast-message" class="toast-message"></span>
   </div>
 
   <script>
-    // ==========================================
-    // CONFIGURATION
-    // Replace the URL below with your deployed Google Apps Script Web App URL.
-    // ==========================================
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwb5F6_SpuEpd_wEb1L8cahbhgSinS6o6_xHE3zQQpw6r3_o2onCHievKgPMNudPNlBCw/exec";
 
-    // SVGs for Toast Notifications
     const ICONS = {
       success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
       error: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
       warning: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`
     };
 
-    // DOM Elements
     const form = document.getElementById("expense-form");
     const submitBtn = document.getElementById("submit-btn");
     const btnSpinner = document.getElementById("btn-spinner");
@@ -484,11 +475,9 @@
     const toastMsg = document.getElementById("toast-message");
     const toastIconContainer = document.getElementById("toast-icon-container");
 
-    // Dynamic Date & Time Updater
     function updateTimestamp() {
       const now = new Date();
       
-      // Formatting for the hidden field (Google Sheets friendly)
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
@@ -499,7 +488,6 @@
       const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       timestampInput.value = formattedTimestamp;
       
-      // Formatting for the nice user visual preview
       const previewOptions = { 
         day: '2-digit', 
         month: '2-digit', 
@@ -511,11 +499,9 @@
       datePreview.innerText = `Eintrag am: ${now.toLocaleString('de-DE', previewOptions)}`;
     }
 
-    // Initialize date and update it every second to remain accurate until user submits
     updateTimestamp();
     let timestampInterval = setInterval(updateTimestamp, 1000);
 
-    // Toast Alert Helper
     let toastTimeout;
     function showToast(message, type = "success") {
       clearTimeout(toastTimeout);
@@ -529,28 +515,21 @@
       }, 4000);
     }
 
-    // Form Submit Handler
     form.addEventListener("submit", async function(e) {
       e.preventDefault();
-      
-      // Stop the ticking clock interval so timestamp doesn't change during submission
       clearInterval(timestampInterval);
 
-      // Validate that the user changed the template Web App URL
-      if (WEB_APP_URL.includes("HIER_DEINE_GOOGLE_WEB_APP_URL_EINTRAGEN") || WEB_APP_URL.trim() === "") {
-        showToast("Konfigurationsfehler: Bitte trage deine Google Apps Script Web-App-URL in index.html ein.", "warning");
-        // Restart timestamp updater
+      if (WEB_APP_URL.trim() === "") {
+        showToast("Konfigurationsfehler: Fehlende URL.", "warning");
         setInterval(updateTimestamp, 1000);
         return;
       }
 
-      // Enter Loading State
       submitBtn.disabled = true;
       btnSpinner.style.display = "block";
       btnText.style.opacity = "0.7";
       btnText.innerText = "Wird gespeichert...";
 
-      // Gather form data
       const formData = new FormData(form);
       const payload = {
         timestamp: formData.get("timestamp"),
@@ -560,51 +539,38 @@
       };
 
       try {
-        // We use fetch with mode: 'no-cors' if we don't care about reading the response,
-        // or simple POST request. Google Apps Script redirects. Setting standard redirect parameter.
-        // We send JSON as a POST request body
         const response = await fetch(WEB_APP_URL, {
           method: "POST",
           mode: "cors",
           headers: {
-            "Content-Type": "text/plain;charset=utf-8", // text/plain prevents CORS preflight OPTIONS request in standard fetch requests
+            "Content-Type": "text/plain;charset=utf-8",
           },
           body: JSON.stringify(payload)
         });
 
-        // Since we use text/plain to avoid preflight, Apps Script still parses postData.contents correctly.
         const result = await response.json();
         
         if (result.status === "success") {
           showToast("Ausgabe erfolgreich gespeichert!", "success");
-          
-          // Reset form fields except timestamp
           document.getElementById("description").value = "";
           document.getElementById("price").value = "";
-          document.getElementById("category").selectedIndex = 0; // resets to selection helper
+          document.getElementById("category").selectedIndex = 0;
         } else {
-          showToast(result.message || "Fehler beim Speichern der Ausgabe.", "error");
+          showToast(result.message || "Fehler beim Speichern.", "error");
         }
       } catch (err) {
-        // Fetch might throw a CORS error if not deployed correctly, but often the request still goes through.
-        // Let's explain nicely to the user.
         console.error("Network/CORS Error: ", err);
+        showToast("Verbindung hergestellt! Falls kein Eintrag erscheint, URL prüfen.", "warning");
         
-        // Let's check if it went through anyway (very common with Apps Script redirect response handling)
-        showToast("Verbindung hergestellt! Falls kein Eintrag im Sheet erscheint, überprüfe die URL.", "warning");
-        
-        // Reset form inputs anyway in case it was a success but blocked by CORS check on redirect
         document.getElementById("description").value = "";
         document.getElementById("price").value = "";
         document.getElementById("category").selectedIndex = 0;
       } finally {
-        // Exit Loading State
         submitBtn.disabled = false;
         btnSpinner.style.display = "none";
         btnText.style.opacity = "1";
         btnText.innerText = "Speichern";
         
-        // Restart the clock ticking for the next entry
         updateTimestamp();
         timestampInterval = setInterval(updateTimestamp, 1000);
       }
